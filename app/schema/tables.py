@@ -23,3 +23,24 @@ class Users(Base):
     def check_password(self, password: str) -> bool:
         """Check if the entered password matches the stored hash"""
         return bcrypt.checkpw(password.encode('utf-8'), self.password_hash.encode('utf-8'))
+    
+    def verify_password(self, password):
+        """Verify password against the stored hash"""
+        return bcrypt.checkpw(password.encode('utf-8'), self.password_hash.encode('utf-8'))
+
+# class Circle(Base):
+#     __tablename__ = 'circle'
+
+#     circle_id = 
+#     collatoral = 
+#     total_remaining = 
+
+
+# class Parties(Base):
+#     __tablename__ = 'parties'
+
+#     party_id = 
+#     circle_id = 
+#     remaining_amount = 
+#     create_at = 
+#     last_updated = 

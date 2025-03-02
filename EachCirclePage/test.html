@@ -46,63 +46,78 @@
         </table>
     </div>
 
-
     <h3>Enter a new contribution:</h3>
+    <select id="contributorSelect">
+        <!-- Options will be inserted dynamically -->
+    </select>
     <input type="number" id="newAmount" placeholder="Enter an amount">
     <button onclick="addContribution()">Add Contribution</button>
 
-
-
     <script>
-
-        // NEED TO BE FIXED
         let contributions = [
-            { name: "Alice", amount: 120, date: Date("2007-10-09")},
-            { name: "Bob", amount: 200, date: Date("09-10-2007") },
-            { name: "Charlie", amount: 100, date: Date("09-10-2007") },
-            { name: "David", amount: 150, date: Date("09-10-2007") },
-            { name: "Joel", amount: 100, date: Date("09-10-2007")}
+            { name: "Alice", amount: 120, date: new Date("2007-10-09") },
+            { name: "Bob", amount: 200, date: new Date("2007-09-10") },
+            { name: "Charlie", amount: 100, date: new Date("2007-09-10") },
+            { name: "David", amount: 150, date: new Date("2007-09-10") },
+            { name: "Joel", amount: 100, date: new Date("2007-09-10") }
         ];
         const goal = 1000;
 
-        let Currentraised = contributions.reduce((sum, contribution) => sum + contribution.amount, 0); 
-        document.getElementById("sumDisplay").textContent = "$"+Currentraised + "/" + goal;
-    
         function updateProgressBar() {
             const total = contributions.reduce((sum, person) => sum + person.amount, 0);
             const percentage = Math.min((total / goal) * 100, 100);
             document.getElementById("progress-bar").style.width = percentage + "%";
             document.getElementById("progress-bar").textContent = Math.round(percentage) + "%";
         }
-    
+
         function populateTable() {
             const tableBody = document.getElementById("contributions-table");
             tableBody.innerHTML = ""; // Clear previous data
-    
+
             // Sort contributions from highest to lowest for ranking(money donated)
             contributions.sort((a, b) => b.amount - a.amount);
-            // ADD A SORT BUTTON WHICH WILL TRIGGER WHETHER TO CALL A SORT BY MONEY OR DATE
-
 
             contributions.forEach((person, index) => {
                 const row = document.createElement("tr");
-                row.innerHTML = `<td>${index + 1}</td><td>${person.name}</td><td>$${person.amount}</td><td>$${person.date}</td>`;
+                row.innerHTML = `<td>${index + 1}</td><td>${person.name}</td><td>$${person.amount}</td><td>${person.date.toLocaleDateString()}</td>`;
                 tableBody.appendChild(row);
             });
         }
-        input = parseFloat(document.getElementById('newAmount').value);
-        function updateContributionAmount(name, newAmount) {
-            
-            let contributor = contributions.find(c => c.name == name);  // Find contributor by name
-            if (contributor) {
-                contributor.amount = newAmount;  // Update the amount
-            } else {
-                console.log("Contributor not found.");
-            }
+
+        function populateContributorSelect() {
+            const select = document.getElementById('contributorSelect');
+            select.innerHTML = ""; // Clear previous options
+
+            contributions.forEach((person) => {
+                const option = document.createElement("option");
+                option.value = person.name;
+                option.textContent = person.name;
+                select.appendChild(option);
+            });
         }
-        updateContributionAmount("Alice", input);
+
+        function addContribution() {
+            const newAmount = parseFloat(document.getElementById('newAmount').value);
+            const selectedContributor = document.getElementById('contributorSelect').value;
+            if (isNaN(newAmount) || newAmount <= 0) {
+                alert("Please enter a valid amount.");
+                return;
+            }
+            const contributor = contributions.find(person => person.name === selectedContributor);
+            if (contributor) {
+                contributor.amount += newAmount;
+                contributor.date = new Date();
+            } else {
+                contributions.push({ name: selectedContributor, amount: newAmount, date: new Date() });
+            }
+            populateTable();
+            updateProgressBar();
+        }
+
+        document.getElementById("sumDisplay").textContent = "$" + contributions.reduce((sum, contribution) => sum + contribution.amount, 0) + "/" + goal;
 
         populateTable();
+        populateContributorSelect();
         updateProgressBar();
     </script>
 </body>

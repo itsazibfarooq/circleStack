@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Circle Information</title>
+    <link rel="stylesheet" href="test.css">
+</head>
+<body>
+<!-- CODE FOR SIDE BAR LEFT -->
+    <!-- Sidebar ADD LINKS LATER -->
+    <div id="mySidebar" class="sidebar">
+        <button class="home-btn" onclick="goHome()">Home</button>
+        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">×</a>
+        <a href="#">About</a>
+        <a href="#">Services</a>
+        <a href="#">Contact</a>
+    </div>
+
+    <!-- Button to open the sidebar -->
+    <button class="open-btn" onclick="openNav()">☰ Open Sidebar</button>
+
+    <!-- Main content of the page -->
+
+<!-- CODE FOR THE PROGRESS  -->
+    <div class="container">
+        <h2>Contribution Progress</h2>
+        <div class="progress-bar-container">
+            <div class="progress-bar" id="progress-bar">0%</div>
+        </div>
+    <h4> You have raised: <span id="sumDisplay"></span></h4>
+
+<!-- CODE FOR LEADERBOARD -->
+        <table>
+            <thead>
+                <tr>
+                    <th>Rank</th>
+                    <th>Name</th>
+                    <th>Contribution ($)</th>
+                    <th>Most Recent Contribution Date</th>
+                </tr>
+            </thead>
+            <tbody id="contributions-table">
+                <!-- Data will be inserted dynamically -->
+            </tbody>
+        </table>
+    </div>
+
+    <h3>Enter a new contribution:</h3>
+    <select id="contributorSelect">
+        <!-- Options will be inserted dynamically -->
+    </select>
+    <input type="number" id="newAmount" placeholder="Enter an amount">
+    <button onclick="addContribution()">Add Contribution</button>
+
+    <script>
+        let contributions = [
+            { name: "Alice", amount: 120, date: new Date("2007-10-09") },
+            { name: "Bob", amount: 200, date: new Date("2007-09-10") },
+            { name: "Charlie", amount: 100, date: new Date("2007-09-10") },
+            { name: "David", amount: 150, date: new Date("2007-09-10") },
+            { name: "Joel", amount: 100, date: new Date("2007-09-10") }
+        ];
+        const goal = 1000;
+
+        function updateProgressBar() {
+            const total = contributions.reduce((sum, person) => sum + person.amount, 0);
+            const percentage = Math.min((total / goal) * 100, 100);
+            document.getElementById("progress-bar").style.width = percentage + "%";
+            document.getElementById("progress-bar").textContent = Math.round(percentage) + "%";
+        }
+
+        function populateTable() {
+            const tableBody = document.getElementById("contributions-table");
+            tableBody.innerHTML = ""; // Clear previous data
+
+            // Sort contributions from highest to lowest for ranking(money donated)
+            contributions.sort((a, b) => b.amount - a.amount);
+
+            contributions.forEach((person, index) => {
+                const row = document.createElement("tr");
+                row.innerHTML = `<td>${index + 1}</td><td>${person.name}</td><td>$${person.amount}</td><td>${person.date.toLocaleDateString()}</td>`;
+                tableBody.appendChild(row);
+            });
+        }
+
+        function populateContributorSelect() {
+            const select = document.getElementById('contributorSelect');
+            select.innerHTML = ""; // Clear previous options
+
+            contributions.forEach((person) => {
+                const option = document.createElement("option");
+                option.value = person.name;
+                option.textContent = person.name;
+                select.appendChild(option);
+            });
+        }
+
+        function addContribution() {
+            const newAmount = parseFloat(document.getElementById('newAmount').value);
+            const selectedContributor = document.getElementById('contributorSelect').value;
+            if (isNaN(newAmount) || newAmount <= 0) {
+                alert("Please enter a valid amount.");
+                return;
+            }
+            const contributor = contributions.find(person => person.name === selectedContributor);
+            if (contributor) {
+                contributor.amount += newAmount;
+                contributor.date = new Date();
+            } else {
+                contributions.push({ name: selectedContributor, amount: newAmount, date: new Date() });
+            }
+            populateTable();
+            updateProgressBar();
+        }
+
+        document.getElementById("sumDisplay").textContent = "$" + contributions.reduce((sum, contribution) => sum + contribution.amount, 0) + "/" + goal;
+
+        populateTable();
+        populateContributorSelect();
+        updateProgressBar();
+    </script>
+</body>
+</html>

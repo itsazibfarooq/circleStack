@@ -1,0 +1,50 @@
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
+.container {
+    width: 50%;
+    margin: 50px auto;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+.progress-bar-container {
+    width: 100%;
+    background: #ddd;
+    border-radius: 20px;
+    overflow: hidden;
+    height: 30px;
+    margin: 20px 0;
+}
+.progress-bar {
+    height: 100%;
+    background: #4caf50;
+    text-align: center;
+    color: white;
+    line-height: 30px;
+    width: 0%; /* Will be updated dynamically */
+}
+
+
+
+/* FOR THE TABLE */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+th, td {
+    padding: 10px;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+th {
+    background: #4caf50;
+    color: white;
+}
+
